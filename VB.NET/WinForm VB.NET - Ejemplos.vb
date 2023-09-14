@@ -42,6 +42,7 @@ Public Class Ejemplos
     Dim FAnc As String = Width
     Dim FAlt As String = Height
     Private Sub MaxRestForm()
+        If MaxForm <> True Then
             Me.Location = Screen.PrimaryScreen.WorkingArea.Location
             Me.Size = Screen.PrimaryScreen.WorkingArea.Size
             MaxForm = True
