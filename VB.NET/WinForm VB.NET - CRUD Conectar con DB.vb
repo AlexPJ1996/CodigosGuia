@@ -37,26 +37,27 @@ Public Class CRUD
 	'-SQLiteConnection - SQLite
 	'-MySQLConnection  - MySQL
 	'----------------------------------------------------------------------------------------------------    
-	Public EsCon As String
+	Public EsCon As Boolean
 	Public EMess As String
 	
 	'Probar conexión con base de datos
 	Sub Conexion()
-        EsCon = "Conectado: No"
+        EsCon = False
         'Instruccion While para intentar establecer conexión con la base de datos
-		While EsCon = "Conectado: No"		
+		While EsCon = False		
             'Instruccion Try para capturar errores
 			Try
                 'Abrir conexion
 				Conectar.Open()
-                EsCon = "Conectado: Si"
-                MessageBox.Show(EsCon)
+                EsCon = True
 				'Cerrar conexion
                 Conectar.Close()
             Catch ex As Exception
-                EsCon = "Conectado: No"
+                EsCon = False
                 EMess = ex.Message
-                MessageBox.Show(EMess)
+                If MessageBox.Show(EMess, "¿Desea reintentar conexión?", MessageBoxButtons.YesNo) = vbNo Then
+                    End
+                End If
             End Try
         End While
     End Sub
