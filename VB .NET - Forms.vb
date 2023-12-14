@@ -36,7 +36,7 @@ Public Class [Forms]
         [ComboBox].FlatStyle = FlatStyle.Popup
     End Sub
 	
-	'Procedimiento para maximizar ventana con FormBorderStyle: None sin cubrir toda la pantalla
+	'Proceso para maximizar ventana con FormBorderStyle: None sin cubrir toda la pantalla
     Dim MaxForm As Boolean
     Dim FAnc As String = Width
     Dim FAlt As String = Height
@@ -51,6 +51,12 @@ Public Class [Forms]
             CenterToScreen()
             MaxForm = False
         End If
+    End Sub
+	
+	'Proceso para captar valores de fecha (yyyy/mm/dd) y hora (hh:mm:ss) de un DateTimePicker
+    Sub MyDateTime()
+        [Label/TextBox] = DateAndTime.Year([DateTimePicker].Value) & "/" & DateAndTime.Month([DateTimePicker].Value) & "/" & DateAndTime.Day([DateTimePicker].Value)
+        [Label/TextBox] = DateAndTime.Hour([DateTimePicker].Value) & ":" & DateAndTime.Minute([DateTimePicker].Value) & ":" & DateAndTime.Second([DateTimePicker].Value)
     End Sub
 End Class
 
