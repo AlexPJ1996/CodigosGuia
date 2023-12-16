@@ -54,9 +54,11 @@ Public Class [Forms]
     End Sub
 	
 	'Proceso para captar valores de fecha (yyyy/mm/dd) y hora (hh:mm:ss) de un DateTimePicker
+	Dim Fecha As String
+	Dim Hora As String
     Sub MyDateTime()
-        [Label/TextBox] = DateAndTime.Year([DateTimePicker].Value) & "/" & DateAndTime.Month([DateTimePicker].Value) & "/" & DateAndTime.Day([DateTimePicker].Value)
-        [Label/TextBox] = DateAndTime.Hour([DateTimePicker].Value) & ":" & DateAndTime.Minute([DateTimePicker].Value) & ":" & DateAndTime.Second([DateTimePicker].Value)
+        Fecha = DateAndTime.Year([DateTimePicker].Value) & "/" & DateAndTime.Month([DateTimePicker].Value) & "/" & DateAndTime.Day([DateTimePicker].Value)
+        Hora = DateAndTime.Hour([DateTimePicker].Value) & ":" & DateAndTime.Minute([DateTimePicker].Value) & ":" & DateAndTime.Second([DateTimePicker].Value)
     End Sub
 End Class
 
