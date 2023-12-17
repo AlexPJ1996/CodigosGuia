@@ -1,9 +1,12 @@
-﻿'Librerías
+'Librerías
 Imports System.Data.SqlClient   'SQL Server
 Imports System.Data.OleDb       'Access (2003/2007-2013)
 Imports System.Data.SQLite      'SQLite
 Imports Devart.Data.SQLite      'SQLite/ADO.NET Devart
 Imports MySQL.Data.MySqlClient  'MySQL
+Imports Devart.Data.MySqlClient 'MySQL/ADO.NET Devart
+Imports MySqlConnector          'MySqlConnector Nuget Package
+Imports System.IO               'Libreria para usar MemoryStream
 
 Public Class CRUD/ConectarDB
     'ConecctionString: (https://www.connectionstrings.com/)
@@ -25,7 +28,8 @@ Public Class CRUD/ConectarDB
 	'Data Source=(Ubicación)\[Database].db; Version=3
 	'
 	'MySQL
-	'Server=[Server];Database=[DatabaseB];Uid=[User];Pwd=[Password]
+	'Server=[ServerAddress];Database=[Database];Uid=[User];Pwd=[Password];
+	'Server=[ServerAddress];Port=[#Port000];Database=[Database];Uid=[User];Pwd=[Password];
 	Dim Cadena As String = "ConecctionString"
     Protected Conectar As New SqlConnection(Cadena) '
     Public EsCon As Boolean
@@ -87,6 +91,24 @@ Public Class CRUD/ConectarDB
         End Try
         Conectar.Close()
     End Sub
+	
+	'Proceso para Consultas SQL: INSERT, UPDATE de imágenes en base de datos
+	Sub SavImg(ByVal SQL As String, ByVal Imagen As PictureBox)
+        Dim MS As New MemoryStream
+        Imagen.Image.Save(MS, Imagen.Image.RawFormat)
+        Dim Imagenes() As Byte = MS.GetBuffer
+        Dim CMD As New MySqlCommand(SQL, Conectar)
+        CMD.Parameters.AddWithValue("@Imagen", Imagenes)
+        Try
+            Conectar.Open()
+            CMD.ExecuteNonQuery()
+            Conectar.Close()
+        Catch ex As Exception
+            EMess = ex.Message
+            MessageBox.Show(EMess)
+			Conectar.Close()
+        End Try
+    End Sub
 End Class
 
 'Procesos para consultas SQL en Forms
@@ -132,21 +154,31 @@ Public Class [Forms]
 	
 	'Proceso para consultas INSERT
 	Private Sub Agregar()
-		SQL = "INSERT INTO [Tabla] ([Columna1]), [ColumnaN]) SELECT " & [Dato1] & ", ..." & [DatoN] & ""		
+		'Consulta para guardar información en base de datos (ordinarios)
+		SQL = "INSERT INTO [Tabla] ([Columna1]), [ColumnaN]) SELECT " & [Dato1] & ", ..." & [DatoN] & ""
 		CDB.Operaciones([DataGridView], SQL)
+		'Consulta para guardar información en base de datos (imágenes)
+		SQL = "INSERT INTO [Tabla] ([Columna1]), [ColumnaN]) VALUES (" & [Dato1] & ", ..." & [DatoN] & "', @Imagen)"
+		CDB.SavImg(SQL, [PictureBox])
 	End Sub
 	'Usar '' para los datos de String: ", " & [Dato1] & "', "
 	
 	'Proceso para consultas UPDATE
 	Private Sub Actualizar()
+		'Consulta para actualizar información en base de datos (ordinarios)
 		SQL = "UPDATE [Tabla] SET [Columna1]=" & [Dato1] & ", [ColumnaN]=" & [DatoN] & " WHERE ([Criterio] = " & [Criterio] & ")"
 		CDB.Operaciones([DataGridView], SQL)
+		'Consulta para actualizar información en base de datos (imágenes)
+		SQL = "UPDATE [Tabla] SET [Columna1]=" & [Dato1] & ", [ColumnaN]=" & [DatoN] & " [Columna]= @Imagen WHERE ([Criterio] = " & [Criterio] & ")"
+		CDB.SavImg(SQL, [PictureBox])
 	End Sub
 	
 	'Proceso para consultas DELETE
 	Private Sub Eliminar()
 		SQL = "DELETE FROM [Tabla] WHERE ([Criterio] = " & [Criterio] & ")"
 		CDB.Operaciones([DataGridView], SQL)
+		'Consulta para eliminar información en base de datos (imágenes)
+		CDB.SavImg(SQL, [PictureBox])
 	End Sub
 	
 	'Proceso para consultas TRUNCATE TABLE
