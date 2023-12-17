@@ -1,5 +1,4 @@
 Public Class [Forms]
-
 	'Proceso para solo recibir numeros en un TextBox, mediante el evento KeyPress
 	Sub OnlyNumbers(ByRef e As System.Windows.Forms.KeyPressEventArgs)
 		e.Handled = Not IsNumeric(e.KeyChar) And Not Char.IsControl(e.KeyChar)
@@ -9,6 +8,8 @@ Public Class [Forms]
 	Sub CellE()
         Try
             [Label/TextBox] = [DataGridView].CurrentRow.Cells([#Columna]).Value
+			'Formato para mostrar en un PictureBox una imagen guardada en base de datos
+			[PictureBox].Image = [DataGridView].CurrentRow.Cells([#Columna]).FormattedValue
         Catch ex As Exception
             MessageBox.Show(ex.Message)
         End Try
@@ -24,7 +25,7 @@ Public Class [Forms]
         End Try
     End Sub
 	
-	'Procedso para cambiar los colores de las filas de un DataGridView
+	'Proceso para cambiar los colores de las filas de un DataGridView
     Sub ColorsDGV()
         [DataGridView].RowsDefaultCellStyle.BackColor = Color.[Color]
         [DataGridView].AlternatingRowsDefaultCellStyle.BackColor = Color.[Color]
@@ -59,6 +60,18 @@ Public Class [Forms]
     Sub MyDateTime()
         Fecha = DateAndTime.Year([DateTimePicker].Value) & "/" & DateAndTime.Month([DateTimePicker].Value) & "/" & DateAndTime.Day([DateTimePicker].Value)
         Hora = DateAndTime.Hour([DateTimePicker].Value) & ":" & DateAndTime.Minute([DateTimePicker].Value) & ":" & DateAndTime.Second([DateTimePicker].Value)
+    End Sub
+	
+	'Proceso para configurar un OpenFileDialog en un para cargar una imagen en un PictureBox
+	Private Sub [Button]_Click(sender As Object, e As EventArgs) Handles [Button].Click
+        Dim OpenFile As New OpenFileDialog
+        OpenFile.Filter = "Imagenes JPG|*.jpg|Imagenes JPEG|*.jpeg|Imagenes PNG|*.png"
+        OpenFile.Title = "Seleccionar imagen"
+        OpenFile.FilterIndex = 1
+        OpenFile.RestoreDirectory = True
+        If OpenFile.ShowDialog() = DialogResult.OK Then
+            [PictureBox].Image = Image.FromFile(OpenFile.FileName)
+        End If
     End Sub
 End Class
 
